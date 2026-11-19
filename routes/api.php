@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DoctorAvailabilityController;
 use App\Http\Controllers\Api\DoctorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,12 @@ Route::domain('{subdomain}.localhost')
         Route::get("/doctors", [DoctorController::class, "index"]);
         Route::post('/doctors', [DoctorController::class, 'store'])
             ->middleware('organization.admin');
-        Route::put('/doctors/{id}', [DoctorController::class, 'update'])
+        Route::put('/doctors/{doctorOrganizationId}', [DoctorController::class, 'update'])
             ->middleware('organization.admin');
+        Route::get(
+        '/doctors/{doctorOrganizationId}/availabilities',
+            [DoctorAvailabilityController::class, 'index']
+        );
+        Route::post("/doctors/{doctorOrganizationId}/availabilities", [DoctorAvailabilityController::class, "store"])->middleware('organization.admin');
+    Route::put("/doctors/{doctorOrganizationId}/availabilities/{availabilityId}", [DoctorAvailabilityController::class, "update"])->middleware('organization.admin');
     });

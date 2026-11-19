@@ -36,9 +36,12 @@ class DoctorController extends Controller
             "doctor" => $doctor
         ], 201);
     }
-    public function update(UpdateDoctorRequest $request, DoctorService $doctorService, int $id){
+    public function update(UpdateDoctorRequest $request, DoctorService $doctorService)
+    {
         $organization = $request->attributes->get("currentOrganization");
-        $doctor = $doctorService->update($organization,$request->validated(),$id);
+        $id = $request->route("id");
+
+        $doctor = $doctorService->update($organization, $request->validated(), (int)$id);
         return response()->json([
             "message" => "Doctor affiliation updated successfully.",
             "doctor" => $doctor

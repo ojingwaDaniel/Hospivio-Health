@@ -7,6 +7,7 @@ use App\Models\DoctorOrganization;
 use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use stdClass;
 
 class DoctorService
 {
@@ -77,7 +78,8 @@ class DoctorService
             ]);
         });
     }
-    public function update(Organization $organization ,array $data , int $id){
+    public function update(Organization $organization, array $data,$id)
+    {
         $affiliation = $organization->doctorOrganizations()->where("id",$id)->firstOrFail();
         $affiliation->update($data);
         return $affiliation->load([

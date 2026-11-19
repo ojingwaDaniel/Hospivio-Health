@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DoctorOrganization extends Model
 {
@@ -23,5 +24,9 @@ class DoctorOrganization extends Model
     public function branch()
     {
         return $this->belongsTo(Branch::class);
+    }
+    public function availabilities()
+    {
+        return $this->hasMany(DoctorAvailability::class);
     }
 }
