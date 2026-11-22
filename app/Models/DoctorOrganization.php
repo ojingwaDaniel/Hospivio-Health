@@ -29,4 +29,8 @@ class DoctorOrganization extends Model
     {
         return $this->hasMany(DoctorAvailability::class);
     }
+    public function timeOffs()
+    {
+        return $this->hasMany(DoctorTimeOff::class);
+    }
 }

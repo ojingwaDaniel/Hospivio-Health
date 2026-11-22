@@ -54,4 +54,19 @@ class DoctorAvailabilityController extends Controller
             "message" => "Doctor Availability Deleted successfully"
         ]);
     }
+
+    public function restore(Request $request){
+        $organization = $request->attributes->get("currentOrganization");
+        $doctorOrganizationId =(int) $request->route("doctorOrganizationId");
+        $availabilityId = (int) $request->route("availabilityId");
+        $doctorAvailability = $this->service->restore(
+            $organization,
+            $doctorOrganizationId,
+            $availabilityId
+        );
+        return response()->json([
+            "message" => "Doctor availability restored successfully.",
+            "doctorAvailability" => $doctorAvailability
+        ]);
+    }
 }

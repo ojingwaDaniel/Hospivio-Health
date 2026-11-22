@@ -23,9 +23,18 @@ Route::domain('{subdomain}.localhost')
         Route::put('/doctors/{doctorOrganizationId}', [DoctorController::class, 'update'])
             ->middleware('organization.admin');
         Route::get(
-        '/doctors/{doctorOrganizationId}/availabilities',
+            '/doctors/{doctorOrganizationId}/availabilities',
             [DoctorAvailabilityController::class, 'index']
         );
         Route::post("/doctors/{doctorOrganizationId}/availabilities", [DoctorAvailabilityController::class, "store"])->middleware('organization.admin');
-    Route::put("/doctors/{doctorOrganizationId}/availabilities/{availabilityId}", [DoctorAvailabilityController::class, "update"])->middleware('organization.admin');
+        Route::put("/doctors/{doctorOrganizationId}/availabilities/{availabilityId}", [DoctorAvailabilityController::class, "update"])->middleware('organization.admin');
+        Route::delete(
+            "/doctors/{doctorOrganizationId}/availabilities/{availabilityId}",
+            [DoctorAvailabilityController::class, "destroy"]
+        )->middleware("organization.admin");
+        Route::post(
+            '/doctors/{doctorOrganizationId}/availabilities/{availabilityId}/restore',
+            [DoctorAvailabilityController::class, 'restore']
+        )->middleware('organization.admin');
     });
+ 

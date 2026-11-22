@@ -19,7 +19,7 @@ class DoctorAvailabilityService
     public function create(Organization $organization, int $doctorOrganizationId, array $data)
     {
         return DB::transaction(function () use ($organization, $doctorOrganizationId, $data) {
-            $affiliation = $organization->doctorOrganizations()->where("id", $doctorOrganizationId)->lockForUpdate()->first();
+            $affiliation = $organization->doctorOrganizations()->where("id", $doctorOrganizationId)->lockForUpdate()->firstOrFail();
             $overlapExists = $affiliation->availabilities()->where("day_of_week", $data["day_of_week"])->where("start_time", "<", $data["end_time"])->where("end_time", ">", $data["start_time"])->exists();
             if ($overlapExists) {
                 throw ValidationException::withMessages([
@@ -50,6 +50,7 @@ class DoctorAvailabilityService
                     "message" => "End Time has to come after start time"
                 ]);
             }
+
             $overlapExists = $affiliation->availabilities()->where("id", "!=", $availability->id)->where("day_of_week", $day_of_week)->where("start_time", "<", $end_time)->where("end_time", ">", $start_time)->exists();
             if ($overlapExists) {
                 throw ValidationException::withMessages([
@@ -89,6 +90,27 @@ class DoctorAvailabilityService
             $availability->delete();
 
             return $availability;
+        });
+    }
+
+    public function restore( Organization $organization,
+    int $doctorOrganizationId,
+    int $availabilityId){
+        return DB::transaction(function() use($organization,$doctorOrganizationId,$availabilityId){
+            $affiliation = $organization->doctorOrganizations()->where("id",$doctorOrganizationId)->lockForUpdate()->firstOrFail();
+            $restoreAvailability = $affiliation->availabilities()->withTrashed()->where("id",$availabilityId)->lockForUpdate()->firstOrFail();
+            $overlapExists = $affiliation->availabilities()->where("day_of_week", $restoreAvailability->day_of_week)->where("start_time", "<", $restoreAvailability->end_time)->where("end_time", ">", $restoreAvailability->start_time)->exists();
+            if ($overlapExists) {
+                throw ValidationException::withMessages([
+                    'start_time' => [
+                        'This availability overlaps with an existing schedule.',
+                    ],
+                ]);
+            }
+            $restoreAvailability->restore();
+            return $restoreAvailability;
+
+
         });
     }
 }
