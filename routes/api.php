@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DoctorAvailabilityController;
 use App\Http\Controllers\Api\DoctorController;
+use App\Http\Controllers\Api\DoctorTimeOffController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,9 +33,33 @@ Route::domain('{subdomain}.localhost')
             "/doctors/{doctorOrganizationId}/availabilities/{availabilityId}",
             [DoctorAvailabilityController::class, "destroy"]
         )->middleware("organization.admin");
+
         Route::post(
             '/doctors/{doctorOrganizationId}/availabilities/{availabilityId}/restore',
             [DoctorAvailabilityController::class, 'restore']
         )->middleware('organization.admin');
+        Route::get(
+            '/doctors/{doctorOrganizationId}/time-offs',
+            [DoctorTimeOffController::class, 'index']
+        )->middleware('organization.admin');
+        Route::post(
+            '/doctors/{doctorOrganizationId}/time-offs',
+            [DoctorTimeOffController::class, 'store']
+        )->middleware('organization.admin');
+
+
+        Route::put(
+            '/doctors/{doctorOrganizationId}/time-offs/{timeOffId}',
+            [DoctorTimeOffController::class, 'update']
+        )->middleware('organization.admin');
+
+        Route::delete(
+            '/doctors/{doctorOrganizationId}/time-offs/{timeOffId}',
+            [DoctorTimeOffController::class, 'destroy']
+        )->middleware('organization.admin');
+
+        Route::post(
+            '/doctors/{doctorOrganizationId}/time-offs/{timeOffId}/restore',
+            [DoctorTimeOffController::class, 'restore']
+        )->middleware('organization.admin');
     });
- 
